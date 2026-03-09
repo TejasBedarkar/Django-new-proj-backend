@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Enable Django REST Framework
     'rest_framework',
+    'students'
 ]
 
 MIDDLEWARE = [
