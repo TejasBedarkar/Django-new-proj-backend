@@ -29,3 +29,9 @@ def update_student(request, id):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors)
+
+@api_view(['DELETE'])
+def delete_student(request, id):
+    student = get_object_or_404(Student, id=id)
+    student.delete()
+    return Response({"message": "Student deleted successfully"})
