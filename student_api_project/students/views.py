@@ -4,6 +4,8 @@ from .models import Student
 from .serializers import StudentSerializer, UserSerializer
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 
 @api_view(['GET', 'POST'])
 def student_list(request):
@@ -45,3 +47,14 @@ def register_user(request):
         return Response(serializer.data)
 
     return Response(serializer.errors)
+
+
+@api_view(['POST'])
+def login_user(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
+    return Response({'error': 'Invalid Credentials'})
