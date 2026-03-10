@@ -24,14 +24,29 @@ def student_list(request):
         return Response(serializer.errors)
     
 
-@api_view(['PUT'])
+# @api_view(['PUT'])
+# def update_student(request, id):
+#     student = get_object_or_404(Student, id=id)
+#     serializer = StudentSerializer(student, data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data)
+#     return Response(serializer.errors)
+
+@api_view(['GET', 'PUT']) # Add 'GET' here
 def update_student(request, id):
     student = get_object_or_404(Student, id=id)
-    serializer = StudentSerializer(student, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
+    
+    if request.method == 'GET':
+        serializer = StudentSerializer(student)
         return Response(serializer.data)
-    return Response(serializer.errors)
+
+    elif request.method == 'PUT':
+        serializer = StudentSerializer(student, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
 @api_view(['DELETE'])
 def delete_student(request, id):
