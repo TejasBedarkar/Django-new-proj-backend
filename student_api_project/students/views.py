@@ -1,8 +1,9 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Student
-from .serializers import StudentSerializer
+from .serializers import StudentSerializer, UserSerializer
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
 @api_view(['GET', 'POST'])
 def student_list(request):
@@ -35,3 +36,12 @@ def delete_student(request, id):
     student = get_object_or_404(Student, id=id)
     student.delete()
     return Response({"message": "Student deleted successfully"})
+
+@api_view(['POST'])
+def register_user(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors)
