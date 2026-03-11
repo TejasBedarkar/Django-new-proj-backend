@@ -55,13 +55,22 @@ def delete_student(request, id):
     return Response({"message": "Student deleted successfully"})
 
 @api_view(['POST'])
-def register_user(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
+def register(request):  # This name must match the one in urls.py
+    username = request.data.get('username')
+    password = request.data.get('password')
+    confirm_password = request.data.get('confirm_password')
 
-    return Response(serializer.errors)
+    if not username or not password or not confirm_password:
+        return Response({'error': 'All fields are required'}, status=400)
+
+    if password != confirm_password:
+        return Response({'error': 'Passwords do not match'}, status=400)
+
+    if User.objects.filter(username=username).exists():
+        return Response({'error': 'Username already taken'}, status=400)
+
+    user = User.objects.create_user(username=username, password=password)
+    return Response({'message': 'User created successfully'}, status=201)
 
 
 @api_view(['POST'])
